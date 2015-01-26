@@ -1,3 +1,9 @@
+Unreleased
+
+* Remove Unicorn in favor of Puma, as [recommended by Heroku]
+
+[recommended by Heroku]: https://devcenter.heroku.com/changelog-items/594
+
 1.23.0 (January 19, 2015)
 
 * Use Bourbon 4.1.0.
