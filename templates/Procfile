@@ -1,2 +1,2 @@
-web: bundle exec rails serve Puma -p $PORT -c ./config/puma.rb
+web: bundle exec rails server Puma -p ${PORT:-3000} -c ./config/puma.rb
 worker: bundle exec rake jobs:work
