@@ -1,6 +1,6 @@
 Unreleased
 
-* Remove Unicorn in favor of Puma, as [recommended by Heroku]
+* Remove Unicorn in favor of Puma, as [recommended by Heroku].
 
 [recommended by Heroku]: https://devcenter.heroku.com/changelog-items/594
 
