@@ -1,29 +1,29 @@
 source "https://rubygems.org"
 
-ruby "<%= Suspenders::RUBY_VERSION %>"
+gem "rails", "<%= Suspenders::RAILS_VERSION %>"
+gem "mysql2"
+gem "puma"
 
-gem "airbrake"
-gem "bourbon", "~> 4.1.0"
-gem "coffee-rails", "~> 4.1.0"
+gem "bitters"
+gem "bourbon"
+gem "coffee-rails"
 gem "delayed_job_active_record"
 gem "email_validator"
 gem "flutie"
 gem "high_voltage"
 gem "i18n-tasks"
 gem "jquery-rails"
-gem "neat", "~> 1.7.0"
+gem "neat"
 gem "newrelic_rpm"
-gem "normalize-rails", "~> 3.0.0"
-gem "pg"
+gem "normalize-rails"
 gem "rack-timeout"
-gem "rails", "<%= Suspenders::RAILS_VERSION %>"
 gem "recipient_interceptor"
 gem "refills"
-gem "sass-rails", "~> 5.0"
+gem "sass-rails"
 gem "simple_form"
+gem "slim-rails"
 gem "title"
 gem "uglifier"
-gem "unicorn"
 
 group :development do
   gem "spring"
@@ -35,14 +35,13 @@ group :development, :test do
   gem "awesome_print"
   gem "bundler-audit", require: false
   gem "byebug"
-  gem "dotenv-rails"
   gem "factory_girl_rails"
   gem "pry-rails"
-  gem "rspec-rails", "~> 3.1.0"
+  gem "rspec-rails"
 end
 
 group :test do
-  gem "capybara-webkit", ">= 1.2.0"
+  gem "capybara-webkit"
   gem "database_cleaner"
   gem "formulaic"
   gem "launchy"
@@ -51,5 +50,6 @@ group :test do
   gem "webmock"
 end
 
-group :staging, :production do
+group :production do
+  gem "rails_12factor"
 end

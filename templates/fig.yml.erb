@@ -1,0 +1,22 @@
+db:
+  image: mysql
+  ports:
+    - "3306"
+  environment:
+   MYSQL_ROOT_PASSWORD: password
+
+web: &base
+  build: .
+  volumes:
+    - .:/app
+  ports:
+    - "80:3000"
+    - "9876:9876"
+  links:
+    - db
+  environment:
+    DATABASE_HOST: db
+    DATABASE_USERNAME: root
+    DATABASE_PASSWORD: password
+    SECRET_KEY_BASE:
+    RACK_ENV:

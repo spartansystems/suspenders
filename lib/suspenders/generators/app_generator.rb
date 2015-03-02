@@ -3,14 +3,8 @@ require 'rails/generators/rails/app/app_generator'
 
 module Suspenders
   class AppGenerator < Rails::Generators::AppGenerator
-    class_option :database, type: :string, aliases: "-d", default: "postgresql",
+    class_option :database, type: :string, aliases: "-d", default: "mysql",
       desc: "Configure for selected database (options: #{DATABASES.join("/")})"
-
-    class_option :heroku, type: :boolean, aliases: "-H", default: false,
-      desc: "Create staging and production Heroku apps"
-
-    class_option :heroku_flags, type: :string, default: "",
-      desc: "Set extra Heroku flags"
 
     class_option :github, type: :string, aliases: "-G", default: nil,
       desc: "Create Github repository and add remote origin pointed to repo"
@@ -67,9 +61,7 @@ module Suspenders
     def setup_database
       say 'Setting up database'
 
-      if 'postgresql' == options[:database]
-        build :use_postgres_config_template
-      end
+      build :use_mysql_config_template
 
       build :create_database
     end

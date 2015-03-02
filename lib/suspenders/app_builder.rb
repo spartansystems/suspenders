@@ -108,20 +108,6 @@ module Suspenders
       )
     end
 
-    def setup_staging_environment
-      staging_file = 'config/environments/staging.rb'
-      copy_file 'staging.rb', staging_file
-
-      config = <<-RUBY
-
-Rails.application.configure do
-  # ...
-end
-      RUBY
-
-      append_file staging_file, config
-    end
-
     def setup_secret_token
       template 'secrets.yml', 'config/secrets.yml', force: true
     end
@@ -135,11 +121,11 @@ end
     end
 
     def create_shared_flashes
-      copy_file '_flashes.html.erb', 'app/views/application/_flashes.html.erb'
+      copy_file '_flashes.html.slim', 'app/views/application/_flashes.html.slim'
     end
 
     def create_shared_javascripts
-      copy_file '_javascript.html.erb', 'app/views/application/_javascript.html.erb'
+      copy_file '_javascript.html.slim', 'app/views/application/_javascript.html.slim'
     end
 
     def create_application_layout
@@ -148,13 +134,9 @@ end
         force: true
     end
 
-    def use_postgres_config_template
-      template 'postgresql_database.yml.erb', 'config/database.yml',
+    def use_mysql_config_template
+      template 'database.yml.erb', 'config/database.yml',
         force: true
-    end
-
-    def create_database
-      bundle_command 'exec rake db:create db:migrate'
     end
 
     def replace_gemfile
@@ -164,14 +146,6 @@ end
 
     def set_ruby_to_version_being_used
       create_file '.ruby-version', "#{Suspenders::RUBY_VERSION}\n"
-    end
-
-    def setup_heroku_specific_gems
-      inject_into_file(
-        "Gemfile",
-        %{\n\s\sgem "rails_stdout_logging"},
-        after: /group :staging, :production do/
-      )
     end
 
     def enable_database_cleaner
@@ -293,16 +267,6 @@ end
       run 'git init'
     end
 
-    def create_heroku_apps(flags)
-      rack_env = "RACK_ENV=staging RAILS_ENV=staging"
-      rails_serve_static_files = "RAILS_SERVE_STATIC_FILES=true"
-      staging_config = "#{rack_env} #{rails_serve_static_files}"
-      run_heroku "create #{app_name}-production #{flags}", "production"
-      run_heroku "create #{app_name}-staging #{flags}", "staging"
-      run_heroku "config:add #{staging_config}", "staging"
-      run_heroku "config:add #{rails_serve_static_files}", "production"
-    end
-
     def set_heroku_remotes
       remotes = <<-SHELL
 
@@ -326,33 +290,9 @@ fi
       SHELL
     end
 
-    def set_heroku_rails_secrets
-      %w(staging production).each do |environment|
-        run_heroku "config:add SECRET_KEY_BASE=#{generate_secret}", environment
-      end
-    end
-
-    def set_memory_management_variable
-      %w(staging production).each do |environment|
-        run_heroku "config:add NEW_RELIC_AGGRESSIVE_KEEPALIVE=1", environment
-      end
-    end
-
     def provide_deploy_script
       copy_file "bin_deploy", "bin/deploy"
 
-      instructions = <<-MARKDOWN
-
-## Deploying
-
-If you have previously run the `./bin/setup` script,
-you can deploy to staging and production with:
-
-    $ ./bin/deploy staging
-    $ ./bin/deploy production
-      MARKDOWN
-
-      append_file "README.md", instructions
       run "chmod a+x bin/deploy"
     end
 
@@ -362,8 +302,8 @@ you can deploy to staging and production with:
     end
 
     def setup_segment_io
-      copy_file '_analytics.html.erb',
-        'app/views/application/_analytics.html.erb'
+      copy_file '_analytics.html.slim',
+        'app/views/application/_analytics.html.slim'
     end
 
     def setup_bundler_audit
@@ -428,11 +368,6 @@ end
         support_bin = File.expand_path(File.join('..', '..', 'spec', 'fakes', 'bin'))
         "PATH=#{support_bin}:$PATH"
       end
-    end
-
-    def run_heroku(command, environment)
-      path_addition = override_path_for_tests
-      run "#{path_addition} heroku #{command} --remote #{environment}"
     end
 
     def generate_secret
